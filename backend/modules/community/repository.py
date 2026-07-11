@@ -96,3 +96,11 @@ class CommunityRepository:
         db.refresh(community)
 
         return community
+    
+    @staticmethod
+    def get_first(db: Session) -> Community | None:
+        return (
+            db.query(Community)
+            .filter(Community.is_active == True)
+            .first()
+        )

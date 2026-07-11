@@ -1,5 +1,6 @@
 from sqlalchemy import String, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import relationship
 
 from database.base_model import BaseModel
 
@@ -37,4 +38,10 @@ class Community(BaseModel):
         Boolean,
         default=True,
         nullable=False,
+    )
+
+    divisions = relationship(
+        "Division",
+        back_populates="community",
+        cascade="all, delete-orphan",
     )
