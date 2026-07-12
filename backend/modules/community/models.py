@@ -45,3 +45,8 @@ class Community(BaseModel):
         back_populates="community",
         cascade="all, delete-orphan",
     )
+
+    member_categories = relationship(
+        "MemberCategory",
+        back_populates="community",
+    )

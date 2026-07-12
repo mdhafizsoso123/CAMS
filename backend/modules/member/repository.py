@@ -3,6 +3,8 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from modules.member.models import Member
+from modules.member_category.models import MemberCategory
+
 from modules.member.schemas import (
     MemberCreate,
     MemberUpdate,
@@ -16,8 +18,11 @@ class MemberRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_all(self) -> list[Member]:
-        return self.db.query(Member).all()
+    def get_all(self,) -> list[Member]:
+
+        return (
+            self.db.query(Member).filter(Member.is_active == True).all()
+        )
 
     def get_by_id(
         self,
@@ -77,6 +82,20 @@ class MemberRepository:
         next_number = last_number + 1
 
         return f"{division.code}-{next_number:04d}"
+    
+    def get_category(
+        self,
+        category_id: UUID,
+    ) -> MemberCategory | None:
+
+        return (
+            self.db.query(MemberCategory)
+            .filter(
+                MemberCategory.id == category_id,
+                MemberCategory.is_active == True,
+            )
+            .first()
+        )
 
     def create(
         self,
@@ -89,11 +108,13 @@ class MemberRepository:
 
         member = Member(
             division_id=data.division_id,
+            category_id=data.category_id,
             member_code=self.generate_member_code(
                 division,
             ),
             full_name=data.full_name,
             father_name=data.father_name,
+            is_active=True,
         )
 
         self.db.add(member)

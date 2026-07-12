@@ -27,6 +27,12 @@ class Member(BaseModel):
         nullable=False,
     )
 
+    category_id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("member_categories.id"),
+        nullable=False,
+    )
+
     member_code: Mapped[str] = mapped_column(
         String(20),
         unique=True,
@@ -51,5 +57,10 @@ class Member(BaseModel):
 
     division = relationship(
         "Division",
+        back_populates="members",
+    )
+
+    category = relationship(
+        "MemberCategory",
         back_populates="members",
     )
